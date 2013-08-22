@@ -84,6 +84,37 @@ class planner_money_realize(osv.osv_memory):
 
 class planner_task(osv.osv):
     _name = 'planner.task'
+
+    def _compute_incoming_money(self, cr, uid, ids, field, value, context=None):
+        res = {}
+        for row in self.browse(cr, uid, ids, context):
+            if not row.is_have_outlay:
+                continue
+            incoming = 0
+            for line in row.outlay_ids:
+                if line.type == 'in':
+                    incoming += line.amount_expected
+            res[row.id] = incoming
+        return res
+
+    def _compute_outgoing_money(self, cr, uid, ids, field, value, context=None):
+        res = {}
+        for row in self.browse(cr, uid, ids, context):
+            if not row.is_have_outlay:
+                continue
+            outgoing = 0
+            for line in row.outlay_ids:
+                if line.type == 'out':
+                    outgoing += line.amount_expected
+            res[row.id] = outgoing
+        return res
+
+    def _compute_balance_money(self, cr, uid, ids, field, value, context=None):
+        res = {}
+        for row in self.browse(cr, uid, ids, context):
+            res[row.id] = row.incoming_money - row.outgoing_money
+        return res
+
     _columns = {
         'name': fields.char('Name', size=64, required=True),
         'date': fields.datetime('Date', required=True),
@@ -94,6 +125,9 @@ class planner_task(osv.osv):
         'location_id': fields.char('Location'),
         'is_have_outlay': fields.boolean('Have outlay'),
         'outlay_ids': fields.one2many('planner.money', 'task_id', string="Outlays"),
+        'incoming_money': fields.function(_compute_incoming_money, type="float", string="Incoming money", store=False),
+        'outgoing_money': fields.function(_compute_outgoing_money, type="float", string="Outgoing money", store=False),
+        'balance_money': fields.function(_compute_balance_money, type="float", string="Balance", store=False),
     }
     _defaults = {
         'state': 'draft',
