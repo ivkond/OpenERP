@@ -1,0 +1,347 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* planner
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20130717-231254\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-08-22 19:09+0000\n"
+"PO-Revision-Date: 2013-08-22 19:09+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: planner
+#: view:planner.money:0
+#: view:planner.task:0
+msgid "Information"
+msgstr "Информация"
+
+#. module: planner
+#: view:planner.task:0
+#: selection:planner.task,state:0
+msgid "Proceed"
+msgstr "В процессе"
+
+#. module: planner
+#: model:ir.actions.act_window,name:planner.action_planner_money_movements_in
+msgid "Incoming money movements"
+msgstr "Поступления денег"
+
+#. module: planner
+#: model:ir.actions.act_window,name:planner.action_planner_money_movements
+#: model:ir.ui.menu,name:planner.menu_planner_money_movements
+msgid "Money movements"
+msgstr "Перемещения денег"
+
+#. module: planner
+#: field:planner.task,priority:0
+msgid "Priority"
+msgstr "Приоритет"
+
+#. module: planner
+#: view:planner.task:0
+msgid "Money summary"
+msgstr "Деньги"
+
+#. module: planner
+#: field:planner.money,state:0
+#: field:planner.task,state:0
+msgid "State"
+msgstr "Статус"
+
+#. module: planner
+#: selection:planner.task,type:0
+msgid "Other"
+msgstr "Другое"
+
+#. module: planner
+#: selection:planner.task,state:0
+msgid "Draft"
+msgstr "Черновик"
+
+#. module: planner
+#: field:planner.task,location_id:0
+msgid "Location"
+msgstr "Место"
+
+#. module: planner
+#: field:planner.money.realize,date_realize:0
+msgid "Realize date"
+msgstr "Дата реализации"
+
+#. module: planner
+#: code:addons/planner/planner.py:70
+#, python-format
+msgid "Wrong amount!"
+msgstr "Неверное количество!"
+
+#. module: planner
+#: field:planner.task,type:0
+msgid "Type"
+msgstr "Тип"
+
+#. module: planner
+#: selection:planner.task,priority:0
+msgid "Lowest"
+msgstr "Самый низкий"
+
+#. module: planner
+#: selection:planner.task,priority:0
+msgid "High"
+msgstr "Высокий"
+
+#. module: planner
+#: selection:planner.task,priority:0
+msgid "Medium"
+msgstr "Средний"
+
+#. module: planner
+#: view:planner.task:0
+msgid "Complete"
+msgstr "Завершено"
+
+#. module: planner
+#: view:planner.money.realize:0
+msgid "Money move realize"
+msgstr "Реализация"
+
+#. module: planner
+#: code:addons/planner/planner.py:152
+#, python-format
+msgid "Some lines in outlay is not realized!"
+msgstr "Некоторые пункты затрат не выполнены!"
+
+#. module: planner
+#: selection:planner.task,state:0
+msgid "Completed"
+msgstr "Завершено"
+
+#. module: planner
+#: field:planner.task,outlay_ids:0
+msgid "Outlays"
+msgstr "Затраты"
+
+#. module: planner
+#: model:ir.model,name:planner.model_planner_money
+msgid "planner.money"
+msgstr "planner.money"
+
+#. module: planner
+#: code:addons/planner/planner.py:66
+#, python-format
+msgid "No ID in context. Can't update record!"
+msgstr "Не найдено ID в контексте. Невозможно обновить запись!"
+
+#. module: planner
+#: view:planner.money:0
+msgid "Money movement"
+msgstr "Перемещение денег"
+
+#. module: planner
+#: model:ir.model,name:planner.model_planner_money_realize
+msgid "planner.money.realize"
+msgstr "planner.money.realize"
+
+#. module: planner
+#: field:planner.money,date:0
+#: field:planner.task,date:0
+msgid "Date"
+msgstr "Дата"
+
+#. module: planner
+#: selection:planner.task,priority:0
+msgid "Highest"
+msgstr "Самый высокий"
+
+#. module: planner
+#: view:planner.money:0
+#: view:planner.money.realize:0
+msgid "Realize"
+msgstr "Реализация"
+
+#. module: planner
+#: field:planner.money,amount_factual:0
+#: field:planner.money.realize,amount_factual:0
+msgid "Amount factual"
+msgstr "Фактическое кол-во"
+
+#. module: planner
+#: field:planner.money,purpose:0
+msgid "Purpose"
+msgstr "Цель"
+
+#. module: planner
+#: code:addons/planner/planner.py:152
+#, python-format
+msgid "Can't complete task!"
+msgstr "Невозможно выполнить задание!"
+
+#. module: planner
+#: selection:planner.task,type:0
+msgid "Purchase"
+msgstr "Покупка"
+
+#. module: planner
+#: selection:planner.money,state:0
+msgid "Realized"
+msgstr "Выполнено"
+
+#. module: planner
+#: model:ir.ui.menu,name:planner.menu_planner_main_menu
+msgid "Planner"
+msgstr "Планировщик"
+
+#. module: planner
+#: view:planner.task:0
+msgid "Outlay"
+msgstr "Затраты"
+
+#. module: planner
+#: field:planner.task,name:0
+msgid "Name"
+msgstr "Название"
+
+#. module: planner
+#: field:planner.task,incoming_money:0
+msgid "Incoming money"
+msgstr "Поступление денег"
+
+#. module: planner
+#: view:planner.money.realize:0
+msgid "or"
+msgstr "или"
+
+#. module: planner
+#: code:addons/planner/planner.py:66
+#: code:addons/planner/planner.py:70
+#, python-format
+msgid "Error!"
+msgstr "Ошибка!"
+
+#. module: planner
+#: view:planner.money:0
+msgid "Amount"
+msgstr "Количество"
+
+#. module: planner
+#: selection:planner.money,state:0
+msgid "Planned"
+msgstr "Запланировано"
+
+#. module: planner
+#: selection:planner.money,state:0
+#: selection:planner.task,state:0
+msgid "Cancelled"
+msgstr "Отменено"
+
+#. module: planner
+#: field:planner.task,balance_money:0
+msgid "Balance"
+msgstr "Баланс"
+
+#. module: planner
+#: field:planner.money,type:0
+msgid "Move type"
+msgstr "Тип перемещения"
+
+#. module: planner
+#: field:planner.money,description:0
+#: field:planner.task,description:0
+msgid "Description"
+msgstr "Описание"
+
+#. module: planner
+#: model:ir.actions.act_window,name:planner.action_planner_tasks
+#: model:ir.ui.menu,name:planner.menu_planner_tasks_main_menu
+#: view:planner.task:0
+msgid "Tasks"
+msgstr "Задания"
+
+#. module: planner
+#: model:ir.model,name:planner.model_planner_task
+msgid "planner.task"
+msgstr "planner.task"
+
+#. module: planner
+#: field:planner.task,outgoing_money:0
+msgid "Outgoing money"
+msgstr "Расходы"
+
+#. module: planner
+#: model:ir.ui.menu,name:planner.menu_planner_money_main_menu
+msgid "Money"
+msgstr "Деньги"
+
+#. module: planner
+#: model:ir.ui.menu,name:planner.menu_planner_money_movements_out
+msgid "Outgoing movements"
+msgstr "Исходящие"
+
+#. module: planner
+#: field:planner.money,amount_expected:0
+msgid "Amount expected"
+msgstr "Ожидаемое кол-во"
+
+#. module: planner
+#: model:ir.ui.menu,name:planner.menu_planner_tasks_all
+msgid "Tasks list"
+msgstr "Список задач"
+
+#. module: planner
+#: field:planner.task,is_have_outlay:0
+msgid "Have outlay"
+msgstr "Есть затраты"
+
+#. module: planner
+#: model:ir.ui.menu,name:planner.menu_planner_money_movements_in
+msgid "Incoming movements"
+msgstr "Входящме"
+
+#. module: planner
+#: field:planner.money,date_realized:0
+msgid "Date realized"
+msgstr "Дата выполнения"
+
+#. module: planner
+#: selection:planner.money,type:0
+msgid "In"
+msgstr "Входящие"
+
+#. module: planner
+#: view:planner.money:0
+#: view:planner.money.realize:0
+#: view:planner.task:0
+msgid "Cancel"
+msgstr "Отмена"
+
+#. module: planner
+#: field:planner.money,task_id:0
+#: view:planner.task:0
+msgid "Task"
+msgstr "Задача"
+
+#. module: planner
+#: selection:planner.money,type:0
+msgid "Out"
+msgstr "Исходящие"
+
+#. module: planner
+#: model:ir.actions.act_window,name:planner.action_planner_money_movements_out
+msgid "Outgoing money movements"
+msgstr "Исходящие перемещения денег"
+
+#. module: planner
+#: selection:planner.task,type:0
+msgid "Event"
+msgstr "Событие"
+
+#. module: planner
+#: selection:planner.task,priority:0
+msgid "Low"
+msgstr "Низкий"
+
