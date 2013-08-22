@@ -87,32 +87,33 @@ class planner_task(osv.osv):
 
     def _compute_incoming_money(self, cr, uid, ids, field, value, context=None):
         res = {}
+
         for row in self.browse(cr, uid, ids, context):
-            if not row.is_have_outlay:
-                continue
             incoming = 0
-            for line in row.outlay_ids:
-                if line.type == 'in':
-                    incoming += line.amount_expected
+            if row.is_have_outlay:
+                for line in row.outlay_ids:
+                    if line.type == 'in' and line.state == 'realized':
+                        incoming += line.amount_expected
             res[row.id] = incoming
         return res
 
     def _compute_outgoing_money(self, cr, uid, ids, field, value, context=None):
         res = {}
+
         for row in self.browse(cr, uid, ids, context):
-            if not row.is_have_outlay:
-                continue
             outgoing = 0
-            for line in row.outlay_ids:
-                if line.type == 'out':
-                    outgoing += line.amount_expected
+            if row.is_have_outlay:
+                for line in row.outlay_ids:
+                    if line.type == 'out' and line.state == 'realized':
+                        outgoing += line.amount_expected
             res[row.id] = outgoing
         return res
 
     def _compute_balance_money(self, cr, uid, ids, field, value, context=None):
         res = {}
         for row in self.browse(cr, uid, ids, context):
-            res[row.id] = row.incoming_money - row.outgoing_money
+            if row.is_have_outlay:
+                res[row.id] = row.incoming_money - row.outgoing_money
         return res
 
     _columns = {

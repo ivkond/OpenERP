@@ -28,11 +28,12 @@
             <field name="model">planner.money</field>
             <field name="arch" type="xml">
                 <form string="Money movement" version="7.0">
-                    <header>
-                        <button name="button_realize" states="planned" type="object" string="Realize" class="oe_highlight"/>
-                        <button name="button_cancel" states="planned" type="object" string="Cancel"/>
-                        <field name="state" nolabel="1" widget="statusbar"/>
-                    </header>
+                <header>
+                    <button name="button_realize" states="planned" type="object" string="Realize" class="oe_highlight"/>
+                    <button name="button_cancel" states="planned" type="object" string="Cancel"/>
+                    <field name="state" nolabel="1" widget="statusbar"/>
+                </header>
+                <sheet>
                     <group>
                         <group string="Information">
                             <field name="purpose" attrs="{'readonly': [('state', '!=', 'planned')]}"/>
@@ -47,6 +48,7 @@
                         </group>
                     </group>
                     <group></group>
+                </sheet>
                 </form>
             </field>
         </record>
@@ -116,26 +118,27 @@
             <field name="model">planner.task</field>
             <field name="arch" type="xml">
                 <form string="Task" version="7.0">
-                    <header>
-                        <button name="button_proceed" states="draft" type="object" string="Proceed" class="oe_highlight"/>
-                        <button name="button_complete" states="proceed" type="object" string="Complete" class="oe_highlight"/>
-                        <button name="button_cancel" states="proceed" type="object" string="Cancel"/>
-                        <field name="state" nolabel="1" widget="statusbar"/>
-                    </header>
+                <header>
+                    <button name="button_proceed" states="draft" type="object" string="Proceed" class="oe_highlight"/>
+                    <button name="button_complete" states="proceed" type="object" string="Complete" class="oe_highlight"/>
+                    <button name="button_cancel" states="proceed" type="object" string="Cancel"/>
+                    <field name="state" nolabel="1" widget="statusbar"/>
+                </header>
+                <sheet>
                     <group>
                         <group string="Information">
                             <field name="name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="type" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="priority" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                            <field name="is_have_outlay" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="location_id" attrs="{'readonly': [('state', 'in', ['completed', 'cancel'])]}"/>
                             <field name="description"/>
                         </group>
                         <group string="Money summary">
-                            <field name="incoming_money"/>
-                            <field name="outgoing_money"/>
-                            <field name="balance_money"/>
+                            <field name="is_have_outlay" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="incoming_money" attrs="{'invisible': [('is_have_outlay', '=', False)]}"/>
+                            <field name="outgoing_money" attrs="{'invisible': [('is_have_outlay', '=', False)]}"/>
+                            <field name="balance_money" attrs="{'invisible': [('is_have_outlay', '=', False)]}"/>
                         </group>
                     </group>
                     <group string="Outlay" attrs="{'invisible': [('is_have_outlay', '=', False)]}">
@@ -149,6 +152,7 @@
                             </tree>
                         </field>
                     </group>
+                </sheet>
                 </form>
             </field>
         </record>
