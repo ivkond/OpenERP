@@ -128,14 +128,14 @@
                             <field name="type" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="priority" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="is_have_outlay" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                        </group>
-                        <group>
-                            <field name="incoming_money"/>
-                            <field name="outgoing_money"/>
-                            <field name="balance_money"/>
                             <field name="date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="location_id" attrs="{'readonly': [('state', 'in', ['completed', 'cancel'])]}"/>
                             <field name="description"/>
+                        </group>
+                        <group string="Money summary">
+                            <field name="incoming_money"/>
+                            <field name="outgoing_money"/>
+                            <field name="balance_money"/>
                         </group>
                     </group>
                     <group string="Outlay" attrs="{'invisible': [('is_have_outlay', '=', False)]}">
