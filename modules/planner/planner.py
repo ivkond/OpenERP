@@ -10,7 +10,7 @@ TASK_TYPES = [('event', 'Event'), ('purchase', 'Purchase'), ('other', 'Other')]
 class planner_money(osv.osv):
     _name = 'planner.money'
     _columns = {
-        'state': fields.selection([('planned', 'Planned'), ('realized', 'Realized'), ('cancel', 'Cancelled')], string="State"),
+        'state': fields.selection([('expected', 'Expected'), ('factual', 'Factual'), ('cancel', 'Cancelled')], string="State"),
         'type': fields.selection([('in', 'In'), ('out', 'Out')], string='Move type', required=True),
         'amount_expected': fields.float('Amount expected', required=True),
         'amount_factual': fields.float('Amount factual', required=True),
@@ -46,7 +46,7 @@ class planner_money(osv.osv):
         return True
 
     _defaults = {
-        'state': 'planned',
+        'state': 'expected',
         'date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
         'date_realized': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
         'amount_factual': 0.0,
@@ -70,7 +70,7 @@ class planner_money_realize(osv.osv_memory):
                 raise osv.except_osv(_('Error!'), _('Wrong amount!'))
 
             self.pool.get('planner.money').write(cr, uid, [money_id], {
-                'state': 'realized',
+                'state': 'factual',
                 'amount_factual': move.amount_factual,
                 'date_realize': move.date_realize,
             })
@@ -85,36 +85,42 @@ class planner_money_realize(osv.osv_memory):
 class planner_task(osv.osv):
     _name = 'planner.task'
 
-    def _compute_incoming_money(self, cr, uid, ids, field, value, context=None):
+    def _compute_money(self, cr, uid, ids, move_type, state, context=None):
         res = {}
 
         for row in self.browse(cr, uid, ids, context):
-            incoming = 0
+            money = 0
             if row.is_have_outlay:
                 for line in row.outlay_ids:
-                    if line.type == 'in' and line.state == 'realized':
-                        incoming += line.amount_expected
-            res[row.id] = incoming
+                    if line.type == move_type:
+                        money += line.amount_expected if state == 'expected' else line.amount_factual
+            res[row.id] = money
         return res
 
-    def _compute_outgoing_money(self, cr, uid, ids, field, value, context=None):
-        res = {}
+    def _compute_exp_in_money(self, cr, uid, ids, field, value, context=None):
+        return self._compute_money(cr, uid, ids, 'in', 'expected', context=context)
+    def _compute_exp_out_money(self, cr, uid, ids, field, value, context=None):
+        return self._compute_money(cr, uid, ids, 'out', 'expected', context=context)
+    def _compute_fact_in_money(self, cr, uid, ids, field, value, context=None):
+        return self._compute_money(cr, uid, ids, 'in', 'factual', context=context)
+    def _compute_fact_out_money(self, cr, uid, ids, field, value, context=None):
+        return self._compute_money(cr, uid, ids, 'out', 'factual', context=context)
 
-        for row in self.browse(cr, uid, ids, context):
-            outgoing = 0
-            if row.is_have_outlay:
-                for line in row.outlay_ids:
-                    if line.type == 'out' and line.state == 'realized':
-                        outgoing += line.amount_expected
-            res[row.id] = outgoing
-        return res
-
-    def _compute_balance_money(self, cr, uid, ids, field, value, context=None):
+    def _compute_balance(self, cr, uid, ids, state, context=None):
         res = {}
         for row in self.browse(cr, uid, ids, context):
+            balance = 0
             if row.is_have_outlay:
-                res[row.id] = row.incoming_money - row.outgoing_money
+                in_money = row.expected_in_money if state == 'expected' else row.factual_in_money
+                out_money = row.expected_out_money if state == 'expected' else row.factual_out_money
+                balance = in_money - out_money
+            res[row.id] = balance
         return res
+
+    def _compute_exp_balance(self, cr, uid, ids, field, value, context=None):
+        return self._compute_balance(cr, uid, ids, 'expected', context=context)
+    def _compute_fact_balance(self, cr, uid, ids, field, value, context=None):
+        return self._compute_balance(cr, uid, ids, 'factual', context=context)
 
     _columns = {
         'name': fields.char('Name', size=64, required=True),
@@ -126,10 +132,13 @@ class planner_task(osv.osv):
         'location_id': fields.char('Location'),
         'is_have_outlay': fields.boolean('Have outlay'),
         'outlay_ids': fields.one2many('planner.money', 'task_id', string="Outlays"),
-        'incoming_money': fields.function(_compute_incoming_money, type="float", string="Incoming money", store=False),
-        'outgoing_money': fields.function(_compute_outgoing_money, type="float", string="Outgoing money", store=False),
-        'balance_money': fields.function(_compute_balance_money, type="float", string="Balance", store=False),
-    }
+        'expected_in_money': fields.function(_compute_exp_in_money, type="float", string="Money in (Expected)", store=False),
+        'expected_out_money': fields.function(_compute_exp_out_money, type="float", string="Money out (Expected)", store=False),
+        'expected_balance': fields.function(_compute_exp_balance, type="float", string="Balance (Expected)", store=False),
+        'factual_in_money': fields.function(_compute_fact_in_money, type="float", string="Money in (Factual)", store=False),
+        'factual_out_money': fields.function(_compute_fact_out_money, type="float", string="Money out (Factual)", store=False),
+        'factual_balance': fields.function(_compute_fact_balance, type="float", string="Balance (Factual)", store=False),
+        }
     _defaults = {
         'state': 'draft',
         'date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -145,60 +154,16 @@ class planner_task(osv.osv):
             if row.is_have_outlay:
                 flag = True
                 for line in row.outlay_ids:
-                    if line.state == 'planned':
+                    if line.state == 'expected':
                         flag = False
                 if flag:
                     self.write(cr, uid, [row.id], {'state': 'completed'}, context)
                 else:
                     raise osv.except_osv(_("Can't complete task!"), _("Some lines in outlay is not realized!"))
+            else:
+                self.write(cr, uid, [row.id], {'state': 'completed'}, context)
         return True
 
     def button_cancel(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'cancel'}, context)
         return True
-
-
-# TODO: WRITE IT MOTHERFUCKER!
-# class planner_budget(osv.osv):
-#     _name = 'planner.budget'
-#     _columns = {
-#         'money_on_hands': fields.float('On hands'),
-#         'piggy': fields.float('In piggy'),
-#         'money_incoming': fields.function(),
-#         'money_outgoing': fields.h
-#     }
-# class planner_statistic(osv.osv):
-#     _name = 'planner.statistic'
-#     _columns = {
-#         'money_out': fields.function(),
-#         'money_in': fields.function(),
-#     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

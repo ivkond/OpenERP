@@ -29,22 +29,22 @@
             <field name="arch" type="xml">
                 <form string="Money movement" version="7.0">
                 <header>
-                    <button name="button_realize" states="planned" type="object" string="Realize" class="oe_highlight"/>
-                    <button name="button_cancel" states="planned" type="object" string="Cancel"/>
+                    <button name="button_realize" states="expected" type="object" string="Realize" class="oe_highlight"/>
+                    <button name="button_cancel" states="expected" type="object" string="Cancel"/>
                     <field name="state" nolabel="1" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>
                         <group string="Information">
-                            <field name="purpose" attrs="{'readonly': [('state', '!=', 'planned')]}"/>
-                            <field name="type" attrs="{'readonly': [('state', '!=', 'planned')]}"/>
-                            <field name="date" attrs="{'readonly': [('state', '!=', 'planned')]}"/>
-                            <field name="date_realized" states="realized" attrs="{'readonly': [('state', '!=', 'planned')]}"/>
+                            <field name="purpose" attrs="{'readonly': [('state', '!=', 'expected')]}"/>
+                            <field name="type" attrs="{'readonly': [('state', '!=', 'expected')]}"/>
+                            <field name="date" attrs="{'readonly': [('state', '!=', 'expected')]}"/>
+                            <field name="date_realized" states="factual" attrs="{'readonly': [('state', '!=', 'expected')]}"/>
                             <field name="description"/>
                         </group>
                         <group string="Amount">
-                            <field name="amount_expected" attrs="{'readonly': [('state', '!=', 'planned')]}"/>
-                            <field name="amount_factual" states="realized" readonly="1"/>
+                            <field name="amount_expected" attrs="{'readonly': [('state', '!=', 'expected')]}"/>
+                            <field name="amount_factual" states="factual" readonly="1"/>
                         </group>
                     </group>
                     <group></group>
@@ -57,7 +57,7 @@
             <field name="name">Money movement tree</field>
             <field name="model">planner.money</field>
             <field name="arch" type="xml">
-                <tree string="Money movement" colors="grey:state=='cancel';blue:state=='realized'">
+                <tree string="Money movement" colors="grey:state=='cancel';blue:state=='factual'">
                     <field name="state" invisible="1"/>
                     <field name="purpose"/>
                     <field name="type"/>
@@ -130,20 +130,30 @@
                             <field name="name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="type" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="priority" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="is_have_outlay" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="location_id" attrs="{'readonly': [('state', 'in', ['completed', 'cancel'])]}"/>
                             <field name="description"/>
                         </group>
-                        <group string="Money summary">
-                            <field name="is_have_outlay" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                            <field name="incoming_money" attrs="{'invisible': [('is_have_outlay', '=', False)]}"/>
-                            <field name="outgoing_money" attrs="{'invisible': [('is_have_outlay', '=', False)]}"/>
-                            <field name="balance_money" attrs="{'invisible': [('is_have_outlay', '=', False)]}"/>
+                        <group>
+                            <group>
+                                <group string="Expected" attrs="{'invisible': [('is_have_outlay', '=', False)]}">
+                                    <field name="expected_in_money"/>
+                                    <field name="expected_out_money"/>
+                                    <field name="expected_balance"/>
+                                </group>
+                                <group string="Factual" attrs="{'invisible': [('is_have_outlay', '=', False)]}">
+                                    <field name="factual_in_money"/>
+                                    <field name="factual_out_money"/>
+                                    <field name="factual_balance"/>
+                                </group>
+                            </group>
+                            <group></group>
                         </group>
                     </group>
                     <group string="Outlay" attrs="{'invisible': [('is_have_outlay', '=', False)]}">
                         <field name="outlay_ids" nolabel="1" attrs="{'readonly': [('state', 'in', ['completed', 'cancel'])]}">
-                            <tree string="Outlay" colors="grey:state=='cancel';blue:state=='realized'">
+                            <tree string="Outlay" colors="grey:state=='cancel';blue:state=='factual'">
                                 <field name="purpose"/>
                                 <field name="amount_expected"/>
                                 <field name="type"/>
@@ -187,5 +197,17 @@
                   parent="menu_planner_tasks_main_menu"
                   id="menu_planner_tasks_all"
                   sequence="2"/>
+
+        <!--<record model="ir.actions.act_window" id="action_planner_budget">-->
+            <!--<field name="name">Budget</field>-->
+            <!--<field name="res_model">planner.budget</field>-->
+            <!--<field name="view_type">form</field>-->
+            <!--<field name="view_mode">form</field>-->
+        <!--</record>-->
+        <!--<menuitem name="Form"-->
+                  <!--action="action_planner_budget"-->
+                  <!--parent="menu_planner_tasks_main_menu"-->
+                  <!--id="menu_planner_form"-->
+                  <!--sequence="5"/>-->
     </data>
 </openerp>
