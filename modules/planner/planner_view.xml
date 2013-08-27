@@ -5,17 +5,17 @@
                   id="menu_planner_main_menu"
                   sequence="1"/>
 
-        <record id="planner_money_realize_form" model="ir.ui.view">
-            <field name="name">Money move realize</field>
-            <field name="model">planner.money.realize</field>
+        <record id="planner_money_wizard_form" model="ir.ui.view">
+            <field name="name">Completion</field>
+            <field name="model">planner.money.wizard</field>
             <field name="arch" type="xml">
-                <form string="Money move realize" version="7.0">
+                <form string="Completion" version="7.0">
                     <group>
                         <field name="amount_factual"/>
-                        <field name="date_realize"/>
+                        <field name="date_completed"/>
                     </group>
                     <footer>
-                        <button string="Realize" class="oe_highlight" type="object" name="action_realize"/>
+                        <button string="Complete" class="oe_highlight" type="object" name="action_complete"/>
                         or
                         <button string="Cancel" special="cancel" />
                     </footer>
@@ -29,25 +29,25 @@
             <field name="arch" type="xml">
                 <form string="Money movement" version="7.0">
                 <header>
-                    <button name="button_realize" states="expected" type="object" string="Realize" class="oe_highlight"/>
-                    <button name="button_cancel" states="expected" type="object" string="Cancel"/>
+                    <button name="button_complete" states="planned" type="object" string="Complete" class="oe_highlight"/>
+                    <button name="button_cancel" states="planned" type="object" string="Cancel"/>
                     <field name="state" nolabel="1" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>
                         <group string="Information">
-                            <field name="purpose" attrs="{'readonly': [('state', '!=', 'expected')]}"/>
-                            <field name="type" attrs="{'readonly': [('state', '!=', 'expected')]}"/>
-                            <field name="date" attrs="{'readonly': [('state', '!=', 'expected')]}"/>
-                            <field name="date_realized" states="factual" attrs="{'readonly': [('state', '!=', 'expected')]}"/>
+                            <field name="purpose" attrs="{'readonly': [('state', '!=', 'planned')]}"/>
+                            <field name="type" attrs="{'readonly': [('state', '!=', 'planned')]}"/>
+                            <field name="date" attrs="{'readonly': [('state', '!=', 'planned')]}"/>
+                            <field name="date_completed" states="completed" attrs="{'readonly': [('state', '!=', 'planned')]}"/>
                             <field name="description"/>
                         </group>
                         <group string="Amount">
-                            <field name="amount_expected" attrs="{'readonly': [('state', '!=', 'expected')]}"/>
-                            <field name="amount_factual" states="factual" readonly="1"/>
+                            <field name="amount_expected" attrs="{'readonly': [('state', '!=', 'planned')]}"/>
+                            <field name="amount_factual" states="completed" readonly="1"/>
                         </group>
                     </group>
-                    <group></group>
+                    <group/>
                 </sheet>
                 </form>
             </field>
@@ -57,13 +57,14 @@
             <field name="name">Money movement tree</field>
             <field name="model">planner.money</field>
             <field name="arch" type="xml">
-                <tree string="Money movement" colors="grey:state=='cancel';blue:state=='factual'">
-                    <field name="state" invisible="1"/>
+                <tree string="Money movement" colors="grey:state=='cancel';blue:state=='completed'">
                     <field name="purpose"/>
+                    <field name="date"/>
+                    <field name="date_completed"/>
                     <field name="type"/>
                     <field name="amount_expected"/>
                     <field name="amount_factual"/>
-                    <field name="date"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -72,7 +73,8 @@
             <field name="name">Money movements</field>
             <field name="res_model">planner.money</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="domain">[('task_id', '=', 'None')]</field>
         </record>
         <record model="ir.actions.act_window" id="action_planner_money_movements_in">
             <field name="name">Incoming money movements</field>
@@ -111,8 +113,6 @@
                   id="menu_planner_money_movements_out"
                   sequence="3"/>
 
-
-
         <record id="planner_task_form" model="ir.ui.view">
             <field name="name">Task form</field>
             <field name="model">planner.task</field>
@@ -135,25 +135,11 @@
                             <field name="location_id" attrs="{'readonly': [('state', 'in', ['completed', 'cancel'])]}"/>
                             <field name="description"/>
                         </group>
-                        <group>
-                            <group>
-                                <group string="Expected" attrs="{'invisible': [('is_have_outlay', '=', False)]}">
-                                    <field name="expected_in_money"/>
-                                    <field name="expected_out_money"/>
-                                    <field name="expected_balance"/>
-                                </group>
-                                <group string="Factual" attrs="{'invisible': [('is_have_outlay', '=', False)]}">
-                                    <field name="factual_in_money"/>
-                                    <field name="factual_out_money"/>
-                                    <field name="factual_balance"/>
-                                </group>
-                            </group>
-                            <group></group>
-                        </group>
+                        <group/>
                     </group>
                     <group string="Outlay" attrs="{'invisible': [('is_have_outlay', '=', False)]}">
                         <field name="outlay_ids" nolabel="1" attrs="{'readonly': [('state', 'in', ['completed', 'cancel'])]}">
-                            <tree string="Outlay" colors="grey:state=='cancel';blue:state=='factual'">
+                            <tree string="Outlay" colors="grey:state=='cancel';blue:state=='completed'">
                                 <field name="purpose"/>
                                 <field name="amount_expected"/>
                                 <field name="type"/>
@@ -193,21 +179,9 @@
                   id="menu_planner_tasks_main_menu"
                   sequence="5"/>
         <menuitem action="action_planner_tasks"
-                  name="Tasks list"
+                  name="All tasks"
                   parent="menu_planner_tasks_main_menu"
                   id="menu_planner_tasks_all"
                   sequence="2"/>
-
-        <!--<record model="ir.actions.act_window" id="action_planner_budget">-->
-            <!--<field name="name">Budget</field>-->
-            <!--<field name="res_model">planner.budget</field>-->
-            <!--<field name="view_type">form</field>-->
-            <!--<field name="view_mode">form</field>-->
-        <!--</record>-->
-        <!--<menuitem name="Form"-->
-                  <!--action="action_planner_budget"-->
-                  <!--parent="menu_planner_tasks_main_menu"-->
-                  <!--id="menu_planner_form"-->
-                  <!--sequence="5"/>-->
     </data>
 </openerp>

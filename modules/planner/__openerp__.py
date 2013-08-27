@@ -5,7 +5,10 @@
     'author': 'Kondrashov Ivan',
     'license': 'AGPL-3',
     'depends': ['base'],
-    'update_xml': ['planner_view.xml'],
+    'data': [
+        'planner_view.xml',
+        'security/planner_security.xml'
+    ],
     'installable': True,
     'auto_install': False,
     'description': '''

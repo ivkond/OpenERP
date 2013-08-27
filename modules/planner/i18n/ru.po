@@ -300,7 +300,7 @@ msgstr "Есть затраты"
 #. module: planner
 #: model:ir.ui.menu,name:planner.menu_planner_money_movements_in
 msgid "Incoming movements"
-msgstr "Входящме"
+msgstr "Входящие"
 
 #. module: planner
 #: field:planner.money,date_realized:0
